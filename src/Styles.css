@@ -1,21 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .agent-icon {
-    width: 50px;
-    height: 50px;
     border-radius: 10%;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: rgba(77, 69, 69, 0.9);
-
     border-color: rgb(144, 135, 135);
     border-width: 2px;
     border-style: solid;
+    transition: opacity 0.3s;
+    object-fit: contain;
 
+}
+
+.agent-icon:hover {
+    opacity: 0.8;
+    cursor: pointer;
 }
 
 .icon {
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+.agent-select-table {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 16px; /* spacing between items */
+    justify-items: center;
+    align-items: center;
+    margin-top: 20px;
 }
