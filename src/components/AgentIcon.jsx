@@ -5,9 +5,6 @@ import '../Styles.css';
 function AgentIcon({ agent, onClick, isSelected }) {
     const id = agent
 
-    function toggleOnTeam() {
-        setOnTeam(!onTeam);
-    }
     return (
         <>
             <div className={isSelected ? "agent-selected-icon" : "agent-icon"} onClick = {onClick}>

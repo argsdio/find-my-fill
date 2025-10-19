@@ -13,9 +13,9 @@
     border-width: 2px;
     border-style: solid;
     transition: opacity 0.3s;
-    object-fit: contain;
-
 }
+
+
 
 .agent-icon:hover {
     opacity: 0.8;
@@ -35,5 +35,21 @@
     gap: 16px; /* spacing between items */
     justify-items: center;
     align-items: center;
+    margin-top: 120px;
+}
+
+.selected-agent-table {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px; /* spacing between items */
+    justify-items: center;
+    align-items: center;
     margin-top: 20px;
+}
+
+.app-container {
+    background-color: #121212;
+    height: 60vh; 
+    width: 50vw;
+    align-self: center;
 }
