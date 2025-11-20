@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import './App.css'
-import './styles.css'
+import './Styles.css'
 
 import AgentIcon from './components/AgentIcon'
 
@@ -37,10 +36,12 @@ function App() {
   'waylay': { role: 'duelist', hasBlind: false, hasSmoke: false, hasCrowdControl: true, hasCripple: false, hasDeterrent: false, hasIntel: false, hasMobility: true, hasHeal: false },
   'yoru': { role: 'duelist', hasBlind: true, hasSmoke: false, hasCrowdControl: false, hasCripple: false, hasDeterrent: false, hasIntel: false, hasMobility: true, hasHeal: false }
 };
-  const [currentTeam, setCurrentTeam] = useState([]) //max 4 agents
+  const [currentTeam, setCurrentTeam] = useState([]);
   const [recommendedAgent, setRecommendedAgent] = useState(null);
+  const [showWelcome, setShowWelcome] = useState(true);
+
   const handleAgentClick = (agent) => {
-    if (currentTeam.length < 4) {
+    if (currentTeam.length < 4 && !currentTeam.includes(agent)) {
         setCurrentTeam([...currentTeam, agent]);
         console.log(currentTeam);
     }
@@ -57,8 +58,6 @@ function App() {
 }, [currentTeam]);
 
   const calculateBestAgent = (currentTeam) => {
-    // look at roles already in the team
-    // return the best agent to complement the team
 
     const needs = {
         role: ['controller', 'initiator', 'sentinel', 'duelist'],
@@ -88,16 +87,18 @@ function App() {
         if (data.hasHeal) needs.hasHeal = false;
     });
 
-    // looks at non-selected agents, rates based on how much they provide the remaining needs
+    // look at non-selected agents, rate based on how much they provide the remaining needs
     let bestAgent = null;
     let bestScore = -1;
     
     agentNames.forEach(agentName => {
-        if (currentTeam.includes(agentName)) return; // skip already selected agents
+        if (currentTeam.includes(agentName)) return; // skips already selected agents
         const data = agentData[agentName];
         let score = 0;
 
-        // role, certain abilities are more important
+        // scoring system (weighted based on general importance)
+        // in the future: will also ask for map, and data will have statistics regarding the 
+        // winrate of each agent on that map to use in determining the best player
         if (needs.role.includes(data.role)) score += 3;
         if (needs.hasBlind && data.hasBlind) score += 2;
         if (needs.hasSmoke && data.hasSmoke) score += 2;
@@ -121,38 +122,115 @@ function App() {
     
   };
 
+  const getContributions = (agentName) => {
+    const data = agentData[agentName];
+    const contributions = [];
+    
+    // again very tedious/hard coded but works for now
+    if (data.hasBlind) contributions.push("Blind");
+    if (data.hasSmoke) contributions.push("Smoke");
+    if (data.hasCrowdControl) contributions.push("Crowd Control");
+    if (data.hasCripple) contributions.push("Cripple");
+    if (data.hasDeterrent) contributions.push("Deterrent");
+    if (data.hasIntel) contributions.push("Intel");
+    if (data.hasMobility) contributions.push("Mobility");
+    if (data.hasHeal) contributions.push("Heal");
+
+    return contributions.join(", ");
+  }
+
   return (
     <>
-        <div className="app-container">
-        <div className="selected-agent-table">
-            {[0, 1, 2, 3].map(index => (
-                <div 
-                key={index}
-                className="aspect-square bg-slate-800 flex items-center justify-center"
-                onClick={() => currentTeam[index] && handleRemoveAgent(index)}
-                >
-                {currentTeam[index] ? (
-                    <AgentIcon agent={currentTeam[index]}/>
-                ) : (
-                    <AgentIcon agent={null}/>
-                )}
+        {showWelcome && (
+        <div 
+            className="popup"
+        >
+        <div className="bg-slate-800 rounded-lg p-8 max-w-md mx-4 relative">
+        
+        {/* Content */}
+        <h2>
+            welcome to <h1>find my fill!</h1>
+        </h2>
+        <p>
+            stuck in a comp lobby where you're the last one to lock? figure out the best agent to play based on your team's composition!
+        </p>
+        <p>
+            this program analyzes roles, abilities, and team synergy to find the optimal last agent to maximize your advantage in winning.
+        </p>
+        
+        <button 
+            onClick={() => setShowWelcome(false)}
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg"
+        >
+            get started
+        </button>
+        </div>
+  </div>
+)}
+        <div className="site-container">
+            <div className="app-container">
+                <div className="agent-select-wrapper">
+                    <div className="agent-select-table">
+                    {agentNames.map((name) => (
+                        <AgentIcon key={name} agent={name} onClick={() => handleAgentClick(name)} isSelected = {currentTeam.includes(name)}/>
+                    ))}
+                    </div>
                 </div>
-            ))}
-            <div className="aspect-square bg-slate-800 flex items-center justify-center">
-                {recommendedAgent ? (
-                <AgentIcon agent={recommendedAgent}/>
-                ) : (
-                    <AgentIcon agent={null}/>
-                )}
+                <div className="selected-agent-wrapper">
+                    <div className="selected-agent-table">
+                    {[0, 1, 2, 3].map(index => (
+                        <div key={index} onClick={() => currentTeam[index] && handleRemoveAgent(index)}>
+                            {currentTeam[index] ? (
+                                <AgentIcon agent={currentTeam[index]}/>
+                            ) : (
+                                <AgentIcon agent={null}/>
+                            )}
+                        </div>
+                    ))}
+                
+                </div>
+                </div>
+                
+                
+                <div className="recommendation-wrapper">
+                    <div className = "recommendation-agent-title-wrapper">
+                        { recommendedAgent ? (
+                            <>
+                                <h1>{recommendedAgent.charAt(0).toUpperCase() + recommendedAgent.slice(1)}</h1>
+                                <h2>{agentData[recommendedAgent]["role"].toUpperCase()}</h2>
+                            </>
+                        ) : <>
+                                <h2>Select 4 agents to get a recommendation!</h2>
+                            </>
+                        }
+                    </div>
+
+                    <div className = "recommendation-icon">
+                        {recommendedAgent ? (
+                    <AgentIcon agent={recommendedAgent}/>
+                    ) : (
+                        <AgentIcon agent={null}/>
+                    )}
+                    </div>
+                    
+                    <div className = "recommendation-text">
+                        { recommendedAgent ? (
+                            <>
+                            
+                            <p>Provides: {getContributions(recommendedAgent)}</p>
+
+                            </>
+                        ) : 
+                            <>
+                            </>
+                        }
+                    </div>
+                </div>
+            
+            
+            
             </div>
         </div>
-        <div className='agent-select-table'>
-            {agentNames.map((name) => (
-                <AgentIcon key={name} agent={name} onClick={() => handleAgentClick(name)} isSelected = {currentTeam.includes(name)}/>
-            ))}
-        </div>
-        </div>
-        
     </>
   )
 }

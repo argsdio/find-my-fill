@@ -2,20 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-.agent-icon {
-    border-radius: 10%;
-    overflow: hidden;
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+.popup {
+    position: fixed;
+    top:15%;
+    left: 15%;
+    width: 70vw;
+    height: 70vh;
+    background-color: rgba(255, 255, 255, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 9999;
+}
+
+.agent-icon {
+    /*
+    border-radius: 10%;
+    overflow: hidden;
     background-color: rgba(77, 69, 69, 0.9);
     border-color: rgb(144, 135, 135);
     border-width: 2px;
     border-style: solid;
+    */
+    border-style: solid;
+    border-color: rgba(186, 182, 182, 0.5);
+    border-width: 1px;
+    border-radius: 10%;
+    overflow: hidden;
     transition: opacity 0.3s;
+    box-sizing: border-box;
+
 }
 
-
+.agent-selected-icon {
+    border: none;
+    box-sizing: border-box;
+}
 
 .agent-icon:hover {
     opacity: 0.8;
@@ -28,28 +63,76 @@
     object-fit: contain;
 }
 
+.agent-select-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
 .agent-select-table {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 16px; /* spacing between items */
-    justify-items: center;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.selected-agent-wrapper {
+    flex: 1;
+    display: flex;
     align-items: center;
-    margin-top: 120px;
+    padding: 2vw;
 }
 
 .selected-agent-table {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 16px; /* spacing between items */
-    justify-items: center;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 15px;
+}
+
+
+.recommendation-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    margin-top: 20px;
+}
+
+.recommendation-agent-title-wrapper {
+    color: white;
+    flex: 1;
+    text-align: left;
+    width: 100%;
+}
+
+.recommendation-icon {
+    flex: 2;
+}
+
+.recommendation-text {
+    padding: 0;
+    flex: 3;
+    color: white;
+    vertical-align: top;
 }
 
 .app-container {
     background-color: #121212;
-    height: 60vh; 
-    width: 50vw;
+    width: 60vw;
     align-self: center;
+    display: flex;
+    flex-direction: row;
+    padding: 50px;
 }
+
+.site-container {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    background-color: #1e1e1e;
+}
+
+
